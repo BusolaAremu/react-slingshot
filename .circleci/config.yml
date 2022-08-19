@@ -17,6 +17,7 @@ jobs:
     <<: *dockerImage
     steps:
       - checkout
+      - run: npm i
       - run: npm run lint
   test:
     <<: *dockerImage
