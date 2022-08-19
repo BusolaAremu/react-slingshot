@@ -1,0 +1,49 @@
+version: 2.1
+orbs:
+  # Declare a dependency on the welcome-orb
+  welcome: circleci/welcome-orb@0.4.1
+# Orchestrate or schedule a set of jobs
+
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+
+defaults: &dockerImage
+  docker:
+    - image: circleci/node:13.8.0
+
+
+jobs:
+  build:
+    <<: *dockerImage
+    steps:
+      - checkout
+      - run: npm i
+      run: npm run lint
+  test:
+    <<: *dockerImage
+    steps:
+      - checkout
+      - run: npm i
+      - run: npm run test
+  analyze:
+    <<: *dockerImage
+    steps:
+      - checkout
+      - run: npm i
+      - run: npm run audit
+
+workflows:
+  projpipeline:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - analyze:
+          requires:
+            - test
+
+
+
+
+
